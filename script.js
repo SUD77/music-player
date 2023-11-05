@@ -4,6 +4,10 @@ const artist = document.getElementById("artist");
 
 const music = document.querySelector("audio");
 const progressContainer = document.getElementById("progress-container");
+const progress = document.getElementById("progress");
+
+const currentTimeEl = document.getElementById("current-time");
+const durationEl = document.getElementById("duration");
 
 const prevBtn = document.getElementById("prev");
 const playBtn = document.getElementById("play");
@@ -92,20 +96,44 @@ function nextSong() {
 loadSong(songs[songIndex]);
 
 //Update Progress Bar and time
-function updateProgressBar(e){
-  if(isPlaying){
-    const {duration,currentTime} = e.srcElement;
-    console.log(duration,currentTime);
+function updateProgressBar(e) {
+  if (isPlaying) {
+    const { duration, currentTime } = e.srcElement;
+    // console.log(duration, currentTime);
 
     //Update the progress bar width
-    const progressPercent = (currentTime/duration) * 100;
-    progress.style.width=`${progressPercent}%`;
+    const progressPercent = (currentTime / duration) * 100;
+    progress.style.width = `${progressPercent}%`;
+
+    //To calculate display for duration
+    const durationMin = Math.floor(duration / 60);
+
+    let durationSeconds = Math.floor(duration % 60);
+
+    if (durationSeconds < 10) {
+      durationSeconds = `0${durationSeconds}`;
+    }
+
+    //delay switch duration element to avoid NaN
+    if (durationSeconds) {
+      durationEl.textContent = `${durationMin}:${durationSeconds}`;
+    }
+
+    //To calculate display for current
+    const currentMin = Math.floor(currentTime / 60);
+
+    let currentSeconds = Math.floor(currentTime % 60);
+
+    if (currentSeconds < 10) {
+      currentSeconds = `0${currentSeconds}`;
+    }
+
+    currentTimeEl.textContent = `${currentMin}:${currentSeconds}`;
   }
 }
-
 
 //Event Listener
 prevBtn.addEventListener("click", prevSong);
 nextBtn.addEventListener("click", nextSong);
 
-music.addEventListener('timeupdate',updateProgressBar);
+music.addEventListener("timeupdate", updateProgressBar);
